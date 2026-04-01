@@ -997,3 +997,265 @@ a {
     padding-top: 30px;
   }
 }
+
+.bookshelf-page .site-nav {
+  align-items: center;
+}
+
+.library-hero,
+.roadmap-grid {
+  display: grid;
+  gap: 16px;
+}
+
+.library-hero {
+  grid-template-columns: minmax(0, 1.2fr) minmax(300px, 0.88fr);
+}
+
+.library-intro,
+.library-feature {
+  min-height: 100%;
+}
+
+.library-intro h1 {
+  margin: 0;
+  font-family: var(--serif);
+  font-size: clamp(2rem, 4vw, 3.55rem);
+  line-height: 1.05;
+  letter-spacing: -0.04em;
+}
+
+.library-intro {
+  justify-content: space-between;
+}
+
+.library-feature {
+  display: grid;
+  gap: 18px;
+  align-content: start;
+}
+
+.library-stats {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.library-stats div {
+  display: grid;
+  gap: 6px;
+  padding: 16px;
+  border: 1px solid rgba(69, 54, 37, 0.08);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.4);
+}
+
+.library-stats span,
+.shelf-meta span,
+.shelf-progress,
+.shelf-author {
+  color: var(--muted);
+}
+
+.library-stat-value {
+  font-family: var(--serif);
+  font-size: 1.08rem;
+  line-height: 1.35;
+}
+
+.feature-link,
+.shelf-cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 46px;
+  padding: 0 18px;
+  border-radius: 999px;
+  border: 1px solid rgba(69, 54, 37, 0.12);
+  background: rgba(255, 255, 255, 0.56);
+}
+
+.feature-link {
+  width: fit-content;
+}
+
+.feature-link:hover,
+.shelf-card:hover .shelf-cta {
+  transform: translateY(-2px);
+  border-color: rgba(138, 99, 65, 0.34);
+}
+
+.shelf-section {
+  margin-top: 16px;
+}
+
+.bookshelf-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  margin-top: 18px;
+}
+
+.shelf-card {
+  display: grid;
+  grid-template-columns: minmax(112px, 148px) minmax(0, 1fr);
+  gap: 18px;
+  padding: 20px;
+  border: 1px solid rgba(69, 54, 37, 0.08);
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.34);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.4);
+}
+
+.shelf-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(138, 99, 65, 0.36);
+}
+
+.shelf-cover {
+  min-height: 220px;
+  padding: 8px;
+  border: 1px solid rgba(69, 54, 37, 0.12);
+  border-radius: 22px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.72) 0%, rgba(247, 239, 229, 0.82) 100%);
+  box-shadow: 0 18px 34px rgba(52, 39, 26, 0.1);
+}
+
+.shelf-cover img,
+.shelf-cover-fallback {
+  display: block;
+  width: 100%;
+  height: 100%;
+  min-height: 204px;
+  border-radius: 16px;
+}
+
+.shelf-cover img {
+  object-fit: cover;
+  border: 1px solid rgba(69, 54, 37, 0.08);
+}
+
+.shelf-cover-fallback {
+  display: grid;
+  place-items: center;
+  padding: 16px;
+  background: linear-gradient(160deg, #d8c0a7 0%, #927053 100%);
+  color: #fffaf3;
+  font-family: var(--serif);
+  font-size: clamp(1.4rem, 3vw, 2rem);
+  letter-spacing: 0.2em;
+}
+
+.shelf-content {
+  display: grid;
+  gap: 12px;
+  min-width: 0;
+}
+
+.shelf-top,
+.shelf-footer {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.shelf-top {
+  align-items: flex-start;
+}
+
+.shelf-footer {
+  align-items: center;
+  margin-top: auto;
+}
+
+.shelf-heading {
+  min-width: 0;
+}
+
+.shelf-heading h3 {
+  margin: 0;
+  font-family: var(--serif);
+  font-size: 1.42rem;
+  line-height: 1.15;
+}
+
+.shelf-author,
+.shelf-summary {
+  margin: 0;
+}
+
+.shelf-summary {
+  color: var(--muted);
+}
+
+.shelf-badge {
+  display: inline-flex;
+  align-items: center;
+  min-height: 32px;
+  padding: 0 12px;
+  border-radius: 999px;
+  background: rgba(35, 28, 21, 0.08);
+  font-size: 0.82rem;
+  white-space: nowrap;
+}
+
+.shelf-meta,
+.shelf-tags {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.shelf-meta span,
+.shelf-tags span {
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.56);
+  font-size: 0.84rem;
+}
+
+.shelf-tags span {
+  border: 1px solid rgba(69, 54, 37, 0.08);
+}
+
+.shelf-progress {
+  font-size: 0.92rem;
+}
+
+.shelf-activity-item p {
+  margin: 0;
+}
+
+.roadmap-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin-top: 16px;
+}
+
+@media (max-width: 980px) {
+  .library-hero,
+  .bookshelf-grid,
+  .roadmap-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 760px) {
+  .shelf-card {
+    grid-template-columns: 1fr;
+  }
+
+  .shelf-cover {
+    max-width: 220px;
+  }
+
+  .shelf-top,
+  .shelf-footer {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .feature-link,
+  .shelf-cta {
+    width: 100%;
+  }
+}
