@@ -471,6 +471,61 @@ a {
   gap: 20px;
 }
 
+.search-panel,
+.reader-search {
+  display: grid;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.search-box {
+  display: grid;
+  gap: 8px;
+}
+
+.search-box span,
+.search-summary {
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  font-size: 0.74rem;
+  color: var(--muted);
+}
+
+.search-box input {
+  width: 100%;
+  min-height: 48px;
+  padding: 0 16px;
+  border: 1px solid rgba(69, 54, 37, 0.12);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.52);
+  color: var(--text);
+  font: inherit;
+  outline: none;
+}
+
+.search-box input::placeholder {
+  color: rgba(109, 98, 88, 0.82);
+}
+
+.search-box input:focus {
+  border-color: rgba(138, 99, 65, 0.42);
+  box-shadow: 0 0 0 3px rgba(138, 99, 65, 0.12);
+}
+
+.search-summary,
+.search-empty {
+  margin: 0;
+}
+
+.search-empty {
+  margin-top: 16px;
+  padding: 14px 16px;
+  border: 1px dashed rgba(69, 54, 37, 0.16);
+  border-radius: 18px;
+  color: var(--muted);
+  background: rgba(255, 255, 255, 0.28);
+}
+
 .copy-stack,
 .notes-list,
 .chapter-list,
