@@ -117,7 +117,21 @@
         </div>
         <p id="catalog-description">当前已更新至第 15 章，后续可以继续无缝追加。</p>
       </div>
+      <div class="search-panel">
+        <label class="search-box" for="home-chapter-search">
+          <span>Search</span>
+          <input
+            id="home-chapter-search"
+            type="search"
+            inputmode="search"
+            autocomplete="off"
+            placeholder="搜索章节标题、章节号或内容关键词"
+          >
+        </label>
+        <p class="search-summary" id="home-search-summary">共 0 章</p>
+      </div>
       <div class="chapter-list" id="chapter-list"></div>
+      <p class="search-empty" id="home-search-empty" hidden>暂时没有找到相关章节，换个关键词再试试。</p>
     </section>
   </main>
 
