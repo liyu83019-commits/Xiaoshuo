@@ -186,7 +186,7 @@ a {
 
 .hero-grid {
   grid-template-columns: minmax(0, 1.45fr) minmax(280px, 0.82fr);
-  align-items: stretch;
+  align-items: start;
 }
 
 .hero-card,
@@ -207,6 +207,13 @@ a {
   border-radius: 28px;
 }
 
+.hero-card {
+  display: flex;
+  flex-direction: column;
+  align-self: start;
+  gap: 18px;
+}
+
 .hero-card h1,
 .reader-article-head h2,
 .section-heading h2,
@@ -218,10 +225,14 @@ a {
 }
 
 .hero-card h1 {
-  max-width: 10ch;
-  font-size: clamp(2.8rem, 6vw, 5.6rem);
-  line-height: 0.96;
-  letter-spacing: -0.04em;
+  max-width: none;
+  width: 100%;
+  font-size: clamp(1.08rem, 2.35vw, 2.45rem);
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .hero-tagline,
@@ -235,15 +246,15 @@ a {
 
 .hero-tagline {
   max-width: 60ch;
-  margin: 18px 0 0;
-  font-size: 1.06rem;
+  margin: 0;
+  font-size: 1rem;
 }
 
 .hero-actions {
   display: flex;
   gap: 14px;
   flex-wrap: wrap;
-  margin: 28px 0;
+  margin: 2px 0 0;
 }
 
 .button {
@@ -275,7 +286,7 @@ a {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 16px;
-  margin: 0;
+  margin: 6px 0 0;
 }
 
 .hero-meta div {
@@ -302,6 +313,27 @@ a {
   flex-direction: column;
   justify-content: space-between;
   gap: 16px;
+}
+
+.cover-frame {
+  margin: 0 0 4px;
+  padding: 10px;
+  border: 1px solid rgba(69, 54, 37, 0.12);
+  border-radius: 24px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.72) 0%, rgba(247, 239, 229, 0.82) 100%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.7),
+    0 22px 42px rgba(52, 39, 26, 0.12);
+}
+
+.cover-frame img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 3 / 4.45;
+  object-fit: cover;
+  border-radius: 18px;
+  border: 1px solid rgba(69, 54, 37, 0.08);
 }
 
 .status-divider {
@@ -578,7 +610,7 @@ a {
   }
 
   .hero-card h1 {
-    max-width: none;
+    font-size: clamp(1.08rem, 4.8vw, 1.82rem);
   }
 }
 
