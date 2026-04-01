@@ -42,6 +42,7 @@ const renderReaderCatalog = (currentChapter) => {
 const renderReaderContent = (currentChapter) => {
   const chapterContent = document.getElementById("chapter-content");
   chapterContent.innerHTML = "";
+  chapterContent.classList.remove("is-loading");
 
   currentChapter.content.forEach((paragraph) => {
     chapterContent.appendChild(createReaderElement("p", null, paragraph));
@@ -114,11 +115,14 @@ const activateFadeIn = () => {
 const initReader = () => {
   const currentChapter = getChapterFromQuery();
   wireReaderFields(currentChapter);
-  renderReaderCatalog(currentChapter);
   renderReaderContent(currentChapter);
   renderReaderNav(currentChapter);
   wireReadingProgress();
-  activateFadeIn();
+
+  requestAnimationFrame(() => {
+    renderReaderCatalog(currentChapter);
+    activateFadeIn();
+  });
 };
 
 initReader();
