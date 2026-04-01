@@ -11,6 +11,66 @@ const createElement = (tagName, className, textContent) => {
   return element;
 };
 
+const HISTORY_STORAGE_KEY = `novel-history:${homeData.novel.title}`;
+const HISTORY_LIMIT = 8;
+
+const formatChapterIndex = (chapterNumber) => `Chapter ${String(chapterNumber).padStart(2, "0")}`;
+
+const buildChapterSearchText = (chapter) =>
+  [
+    chapter.number,
+    `第${chapter.number}章`,
+    chapter.title,
+    chapter.excerpt,
+    ...(chapter.content || [])
+  ]
+    .join(" ")
+    .toLowerCase();
+
+const getFilteredChapters = (query) => {
+  const keyword = query.trim().toLowerCase();
+  if (!keyword) {
+    return homeData.chapters;
+  }
+
+  return homeData.chapters.filter((chapter) => buildChapterSearchText(chapter).includes(keyword));
+};
+
+const readViewingHistory = () => {
+  try {
+    const rawHistory = window.localStorage.getItem(HISTORY_STORAGE_KEY);
+    const parsedHistory = rawHistory ? JSON.parse(rawHistory) : [];
+    return Array.isArray(parsedHistory) ? parsedHistory.slice(0, HISTORY_LIMIT) : [];
+  } catch (error) {
+    return [];
+  }
+};
+
+const renderViewingHistory = () => {
+  const historyList = document.getElementById("home-history-list");
+  const historyEmpty = document.getElementById("home-history-empty");
+  const historyCount = document.getElementById("home-history-count");
+  const history = readViewingHistory();
+
+  historyCount.textContent = String(history.length);
+  historyList.innerHTML = "";
+  historyEmpty.hidden = history.length !== 0;
+
+  history.forEach((record) => {
+    const link = createElement("a", "history-entry");
+    link.href = `reader.html?chapter=${record.number}`;
+
+    const top = createElement("div", "history-entry-top");
+    top.append(
+      createElement("strong", null, record.title),
+      createElement("span", null, `第 ${record.number} 章`)
+    );
+
+    link.append(top, createElement("p", null, record.visitedLabel || "最近阅读"));
+    historyList.appendChild(link);
+  });
+};
+
 const renderHeroMeta = () => {
   const heroMeta = document.getElementById("hero-meta");
   const items = [
@@ -45,11 +105,11 @@ const renderReadingNotes = () => {
   });
 };
 
-const renderChapterList = () => {
+const renderChapterList = (chapters = homeData.chapters) => {
   const chapterList = document.getElementById("chapter-list");
   chapterList.innerHTML = "";
 
-  homeData.chapters.forEach((chapter) => {
+  chapters.forEach((chapter) => {
     const link = createElement("a", "chapter-card");
     link.href = `reader.html?chapter=${chapter.number}`;
 
@@ -62,7 +122,7 @@ const renderChapterList = () => {
     link.append(
       top,
       createElement("p", null, chapter.excerpt),
-      createElement("span", "reader-chapter-index", `Chapter ${String(chapter.number).padStart(2, "0")}`)
+      createElement("span", "reader-chapter-index", formatChapterIndex(chapter.number))
     );
 
     chapterList.appendChild(link);
@@ -89,6 +149,15 @@ const renderTimeline = () => {
   });
 };
 
+const updateHomeSearchSummary = (visibleCount, query) => {
+  const summary = document.getElementById("home-search-summary");
+  summary.textContent = query.trim() ? `找到 ${visibleCount} 章` : `共 ${homeData.chapters.length} 章`;
+};
+
+const toggleHomeSearchEmpty = (isEmpty) => {
+  document.getElementById("home-search-empty").hidden = !isEmpty;
+};
+
 const wireStaticFields = () => {
   const latestChapter = homeData.chapters[homeData.chapters.length - 1];
   const latestLink = `reader.html?chapter=${latestChapter.number}`;
@@ -109,6 +178,21 @@ const wireStaticFields = () => {
   document.getElementById("latest-chapter-link").href = latestLink;
   document.getElementById("header-latest-link").href = latestLink;
   document.getElementById("footer-reader-link").href = latestLink;
+};
+
+const wireHomeSearch = () => {
+  const searchInput = document.getElementById("home-chapter-search");
+
+  const applySearch = () => {
+    const filteredChapters = getFilteredChapters(searchInput.value);
+    renderChapterList(filteredChapters);
+    updateHomeSearchSummary(filteredChapters.length, searchInput.value);
+    toggleHomeSearchEmpty(filteredChapters.length === 0);
+  };
+
+  searchInput.addEventListener("input", applySearch);
+  searchInput.addEventListener("search", applySearch);
+  applySearch();
 };
 
 const activateFadeIn = () => {
@@ -132,8 +216,9 @@ const initHome = () => {
   renderHeroMeta();
   renderSynopsis();
   renderReadingNotes();
-  renderChapterList();
   renderTimeline();
+  renderViewingHistory();
+  wireHomeSearch();
   activateFadeIn();
 };
 

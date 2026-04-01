@@ -11,6 +11,91 @@ const createReaderElement = (tagName, className, textContent) => {
   return element;
 };
 
+const HISTORY_STORAGE_KEY = `novel-history:${readerData.novel.title}`;
+const HISTORY_LIMIT = 8;
+
+const formatChapterIndex = (chapterNumber) => `Chapter ${String(chapterNumber).padStart(2, "0")}`;
+
+const buildChapterSearchText = (chapter) =>
+  [
+    chapter.number,
+    `第${chapter.number}章`,
+    chapter.title,
+    chapter.excerpt,
+    ...(chapter.content || [])
+  ]
+    .join(" ")
+    .toLowerCase();
+
+const getFilteredChapters = (query) => {
+  const keyword = query.trim().toLowerCase();
+  if (!keyword) {
+    return readerData.chapters;
+  }
+
+  return readerData.chapters.filter((chapter) => buildChapterSearchText(chapter).includes(keyword));
+};
+
+const readViewingHistory = () => {
+  try {
+    const rawHistory = window.localStorage.getItem(HISTORY_STORAGE_KEY);
+    const parsedHistory = rawHistory ? JSON.parse(rawHistory) : [];
+    return Array.isArray(parsedHistory) ? parsedHistory.slice(0, HISTORY_LIMIT) : [];
+  } catch (error) {
+    return [];
+  }
+};
+
+const saveViewingHistory = (currentChapter) => {
+  const nextRecord = {
+    number: currentChapter.number,
+    title: currentChapter.title,
+    visitedAt: Date.now(),
+    visitedLabel: `阅读于 ${new Date().toLocaleString("zh-CN", {
+      month: "2-digit",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit"
+    })}`
+  };
+
+  const nextHistory = [
+    nextRecord,
+    ...readViewingHistory().filter((record) => record.number !== currentChapter.number)
+  ].slice(0, HISTORY_LIMIT);
+
+  try {
+    window.localStorage.setItem(HISTORY_STORAGE_KEY, JSON.stringify(nextHistory));
+  } catch (error) {
+    return;
+  }
+};
+
+const renderViewingHistory = () => {
+  const historyList = document.getElementById("reader-history-list");
+  const historyEmpty = document.getElementById("reader-history-empty");
+  const historyCount = document.getElementById("reader-history-count");
+  const history = readViewingHistory();
+
+  historyCount.textContent = String(history.length);
+  historyList.innerHTML = "";
+  historyEmpty.hidden = history.length !== 0;
+
+  history.forEach((record) => {
+    const link = createReaderElement("a", "history-entry");
+    link.href = `reader.html?chapter=${record.number}`;
+
+    const top = createReaderElement("div", "history-entry-top");
+    top.append(
+      createReaderElement("strong", null, record.title),
+      createReaderElement("span", null, `第 ${record.number} 章`)
+    );
+
+    link.append(top, createReaderElement("p", null, record.visitedLabel || "最近阅读"));
+    historyList.appendChild(link);
+  });
+};
+
 const getChapterFromQuery = () => {
   const params = new URLSearchParams(window.location.search);
   const chapterNumber = Number(params.get("chapter"));
@@ -18,11 +103,11 @@ const getChapterFromQuery = () => {
   return chapter || readerData.chapters[readerData.chapters.length - 1];
 };
 
-const renderReaderCatalog = (currentChapter) => {
+const renderReaderCatalog = (currentChapter, chapters = readerData.chapters) => {
   const catalog = document.getElementById("reader-catalog");
   catalog.innerHTML = "";
 
-  readerData.chapters.forEach((chapter) => {
+  chapters.forEach((chapter) => {
     const link = createReaderElement("a", "catalog-link");
     link.href = `reader.html?chapter=${chapter.number}`;
     if (chapter.number === currentChapter.number) {
@@ -30,7 +115,7 @@ const renderReaderCatalog = (currentChapter) => {
     }
 
     link.append(
-      createReaderElement("span", null, `Chapter ${String(chapter.number).padStart(2, "0")}`),
+      createReaderElement("span", null, formatChapterIndex(chapter.number)),
       createReaderElement("strong", null, chapter.title),
       createReaderElement("span", null, chapter.updateDate)
     );
@@ -83,16 +168,47 @@ const wireReaderFields = (currentChapter) => {
   document.getElementById("reader-article-meta").textContent = `更新于 ${currentChapter.updateDate}`;
 };
 
+const updateReaderSearchSummary = (visibleCount, query) => {
+  const summary = document.getElementById("reader-search-summary");
+  summary.textContent = query.trim() ? `找到 ${visibleCount} 章` : `共 ${readerData.chapters.length} 章`;
+};
+
+const toggleReaderSearchEmpty = (isEmpty) => {
+  document.getElementById("reader-search-empty").hidden = !isEmpty;
+};
+
+const wireReaderSearch = (currentChapter) => {
+  const searchInput = document.getElementById("reader-chapter-search");
+
+  const applySearch = () => {
+    const filteredChapters = getFilteredChapters(searchInput.value);
+    renderReaderCatalog(currentChapter, filteredChapters);
+    updateReaderSearchSummary(filteredChapters.length, searchInput.value);
+    toggleReaderSearchEmpty(filteredChapters.length === 0);
+  };
+
+  searchInput.addEventListener("input", applySearch);
+  searchInput.addEventListener("search", applySearch);
+  applySearch();
+};
+
 const wireReadingProgress = () => {
   const progressBar = document.getElementById("reading-progress-bar");
+  const chapterContent = document.getElementById("chapter-content");
+  const isSplitScroll = () => window.matchMedia("(min-width: 981px)").matches;
+
   const updateProgress = () => {
-    const scrollTop = window.scrollY;
-    const scrollableHeight = document.documentElement.scrollHeight - window.innerHeight;
+    const scrollTop = isSplitScroll() ? chapterContent.scrollTop : window.scrollY;
+    const scrollableHeight = isSplitScroll()
+      ? chapterContent.scrollHeight - chapterContent.clientHeight
+      : document.documentElement.scrollHeight - window.innerHeight;
     const progress = scrollableHeight > 0 ? (scrollTop / scrollableHeight) * 100 : 0;
     progressBar.style.width = `${Math.min(progress, 100)}%`;
   };
 
+  chapterContent.addEventListener("scroll", updateProgress, { passive: true });
   window.addEventListener("scroll", updateProgress, { passive: true });
+  window.addEventListener("resize", updateProgress, { passive: true });
   updateProgress();
 };
 
@@ -114,15 +230,14 @@ const activateFadeIn = () => {
 
 const initReader = () => {
   const currentChapter = getChapterFromQuery();
+  saveViewingHistory(currentChapter);
   wireReaderFields(currentChapter);
   renderReaderContent(currentChapter);
   renderReaderNav(currentChapter);
+  renderViewingHistory();
+  wireReaderSearch(currentChapter);
   wireReadingProgress();
-
-  requestAnimationFrame(() => {
-    renderReaderCatalog(currentChapter);
-    activateFadeIn();
-  });
+  activateFadeIn();
 };
 
 initReader();
