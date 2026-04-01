@@ -102,6 +102,8 @@ const wireStaticFields = () => {
   document.getElementById("update-date").textContent = homeData.novel.updateDate;
   document.getElementById("novel-tags").textContent = homeData.novel.toneTags.join(" / ");
   document.getElementById("novel-quote").textContent = homeData.novel.quote;
+  document.getElementById("novel-cover").src = homeData.novel.coverImage;
+  document.getElementById("novel-cover").alt = homeData.novel.coverAlt;
   document.getElementById("catalog-description").textContent = `当前已更新至第 ${latestChapter.number} 章，后续可以继续无缝追加。`;
   document.getElementById("footer-copy").textContent = homeData.site.footerCopy;
   document.getElementById("latest-chapter-link").href = latestLink;

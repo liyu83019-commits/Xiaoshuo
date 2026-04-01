@@ -6,10 +6,12 @@
     "novel":  {
                   "title":  "穿到民国第一夜，我被少帅盯上了",
                   "tagline":  "一夜穿进民国名门，她借少帅的刀自保，也一步步走进被调换的人生与旧年的深局。",
-                  "author":  "待补充",
+                  "author":  "Frank",
                   "status":  "连载中",
                   "updateDate":  "2026-04-01",
                   "totalChapters":  18,
+                  "coverImage":  "assets/images/book-cover.png",
+                  "coverAlt":  "《穿到民国第一夜，我被少帅盯上了》封面图",
                   "toneTags":  [
                                    "民国",
                                    "悬疑",
