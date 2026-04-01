@@ -20,7 +20,23 @@
       <p id="reader-site-title">Novel Residence</p>
       <h1 id="reader-chapter-title">章节标题</h1>
     </div>
-    <div class="reader-header-meta" id="reader-header-meta"></div>
+    <div class="reader-header-actions">
+      <div class="reader-header-meta" id="reader-header-meta"></div>
+      <details class="history-widget">
+        <summary class="history-trigger">
+          <span>观看记录</span>
+          <strong id="reader-history-count">0</strong>
+        </summary>
+        <div class="history-panel">
+          <div class="history-panel-head">
+            <span>Recent</span>
+            <h2>最近阅读</h2>
+          </div>
+          <div class="history-list" id="reader-history-list"></div>
+          <p class="history-empty" id="reader-history-empty" hidden>还没有阅读记录，读过章节后这里会自动出现。</p>
+        </div>
+      </details>
+    </div>
   </header>
 
   <main class="reader-layout">
@@ -29,7 +45,21 @@
         <span>Catalog</span>
         <h2>章节目录</h2>
       </div>
+      <div class="reader-search">
+        <label class="search-box" for="reader-chapter-search">
+          <span>Search</span>
+          <input
+            id="reader-chapter-search"
+            type="search"
+            inputmode="search"
+            autocomplete="off"
+            placeholder="搜索章节标题、章节号或内容关键词"
+          >
+        </label>
+        <p class="search-summary" id="reader-search-summary">共 0 章</p>
+      </div>
       <div class="reader-catalog" id="reader-catalog"></div>
+      <p class="search-empty" id="reader-search-empty" hidden>暂时没有找到相关章节，换个关键词再试试。</p>
     </aside>
 
     <article class="reader-article visible">
