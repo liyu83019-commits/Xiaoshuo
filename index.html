@@ -26,8 +26,8 @@
     </a>
     <div class="header-actions">
       <nav class="site-nav">
-        <a href="#bookshelf">书架</a>
-        <a href="#publishing-notes">上新计划</a>
+        <a href="#bookshelf">逛书架</a>
+        <a href="#publishing-notes">书架动态</a>
         <a id="header-feature-link" href="reader.html">继续阅读</a>
       </nav>
     </div>
@@ -36,25 +36,36 @@
   <main class="page-shell">
     <section class="library-hero fade-section">
       <article class="panel library-intro">
-        <p class="eyebrow" id="home-eyebrow">Bookshelf</p>
-        <h1 id="home-heading">在书架里挑一本，再进入对应作品页。</h1>
+        <p class="eyebrow" id="home-eyebrow">书架精选</p>
+        <h1 id="home-heading">在书架里，先翻开今晚最对味的那一本。</h1>
         <p class="hero-tagline" id="home-description">
           这里收纳站内作品，你可以先挑喜欢的故事，再进入对应作品页继续阅读。
         </p>
+        <div class="hero-marquee" id="hero-marquee"></div>
         <div class="hero-actions">
           <a class="button button-primary" href="#bookshelf">查看书架</a>
           <a class="button button-secondary" id="hero-feature-link" href="reader.html">继续当前连载</a>
         </div>
+        <div class="hero-glance" id="hero-glance"></div>
       </article>
 
       <aside class="panel library-feature">
         <div class="panel-heading">
-          <span>主推作品</span>
-          <h2>本周主推</h2>
+          <span>今夜主推</span>
+          <h2>今晚最适合翻开的故事</h2>
         </div>
-        <p class="panel-copy" id="feature-copy">
-          当前更新中的作品会优先显示在这里，方便读者一进站就看到最新连载。
-        </p>
+        <div class="feature-book-card">
+          <div class="feature-book-cover" id="feature-cover"></div>
+          <div class="feature-book-body">
+            <p class="feature-kicker" id="feature-kicker">今晚主推</p>
+            <h3 id="feature-title">主推作品</h3>
+            <p class="feature-meta" id="feature-meta">作者 · 更新信息</p>
+            <p class="panel-copy feature-summary" id="feature-copy">
+              当前更新中的作品会优先显示在这里，方便读者一进站就看到最新连载。
+            </p>
+            <div class="feature-tags" id="feature-tags"></div>
+          </div>
+        </div>
         <div class="library-stats" id="library-stats"></div>
         <a class="feature-link" id="feature-link" href="reader.html">进入本周主推</a>
       </aside>
