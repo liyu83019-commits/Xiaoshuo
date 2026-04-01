@@ -562,12 +562,16 @@ a {
 
 .reader-sidebar {
   position: sticky;
-  top: 34px;
+  top: 24px;
+  display: flex;
+  flex-direction: column;
   padding: 28px;
   border-radius: 28px;
 }
 
 .reader-article {
+  display: flex;
+  flex-direction: column;
   padding: 46px;
   border-radius: 34px;
   background: var(--surface-strong);
@@ -580,6 +584,19 @@ a {
 
 .reader-copy {
   padding-top: 18px;
+  padding-right: 10px;
+  max-height: calc(100vh - 250px);
+  overflow-y: auto;
+  overflow-x: hidden;
+  overscroll-behavior: contain;
+}
+
+.reader-catalog {
+  padding-right: 10px;
+  max-height: calc(100vh - 220px);
+  overflow-y: auto;
+  overflow-x: hidden;
+  overscroll-behavior: contain;
 }
 
 .reader-copy.is-loading p {
@@ -604,6 +621,12 @@ a {
 .catalog-link.active {
   border-color: rgba(138, 99, 65, 0.42);
   background: rgba(255, 252, 247, 0.74);
+}
+
+.reader-catalog,
+.reader-copy {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(138, 99, 65, 0.34) transparent;
 }
 
 .reader-nav {
@@ -658,6 +681,17 @@ a {
 
   .hero-card h1 {
     font-size: clamp(1.08rem, 4.8vw, 1.82rem);
+  }
+
+  .reader-layout {
+    margin-bottom: 64px;
+  }
+
+  .reader-catalog,
+  .reader-copy {
+    max-height: none;
+    overflow: visible;
+    padding-right: 0;
   }
 }
 
