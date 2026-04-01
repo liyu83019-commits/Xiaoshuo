@@ -69,6 +69,13 @@
         <p class="eyebrow">Minimal Edition</p>
         <h1 id="novel-title">作品名待填</h1>
         <p class="hero-tagline" id="novel-tagline">你把小说信息给我后，这里会替换成一句更有气质的作品短句。</p>
+        <section class="hero-synopsis-block" id="overview">
+          <div class="mini-heading">
+            <span>Overview</span>
+            <h2>作品简介</h2>
+          </div>
+          <div class="copy-stack hero-synopsis" id="synopsis"></div>
+        </section>
 
         <div class="hero-actions">
           <a class="button button-primary" id="latest-chapter-link" href="reader.html">阅读最新章节</a>
@@ -79,21 +86,15 @@
       </article>
     </section>
 
-    <section class="home-content-grid fade-section" id="overview">
-      <article class="panel panel-large">
-        <div class="panel-heading">
-          <span>Overview</span>
-          <h2>作品简介</h2>
-        </div>
-        <div class="copy-stack" id="synopsis"></div>
-      </article>
-
+    <section class="home-content-grid fade-section">
       <article class="panel panel-compact">
         <div class="panel-heading">
           <span>Notes</span>
           <h2>阅读信息</h2>
         </div>
-        <ul class="notes-list" id="reading-notes"></ul>
+        <div class="panel-body-scroll">
+          <ul class="notes-list" id="reading-notes"></ul>
+        </div>
       </article>
 
       <article class="panel panel-compact">
@@ -102,7 +103,9 @@
           <h2>最近更新</h2>
         </div>
         <p class="panel-copy">这里会自动突出最新几章，读者可以直接续读。</p>
-        <div class="timeline-list" id="update-timeline"></div>
+        <div class="panel-body-scroll">
+          <div class="timeline-list" id="update-timeline"></div>
+        </div>
       </article>
     </section>
 
