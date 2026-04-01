@@ -1,198 +1,191 @@
-const homeData = window.NOVEL_DATA;
+﻿const bookshelfData = window.BOOKSHELF_DATA;
 
 const createElement = (tagName, className, textContent) => {
   const element = document.createElement(tagName);
   if (className) {
     element.className = className;
   }
-  if (textContent) {
+  if (typeof textContent === "string") {
     element.textContent = textContent;
   }
   return element;
 };
 
-const HISTORY_STORAGE_KEY = `novel-history:${homeData.novel.title}`;
-const HISTORY_LIMIT = 8;
-
-const formatChapterIndex = (chapterNumber) => `Chapter ${String(chapterNumber).padStart(2, "0")}`;
-
-const buildChapterSearchText = (chapter) =>
-  [
-    chapter.number,
-    `第${chapter.number}章`,
-    chapter.title,
-    chapter.excerpt,
-    ...(chapter.content || [])
-  ]
-    .join(" ")
-    .toLowerCase();
-
-const getFilteredChapters = (query) => {
-  const keyword = query.trim().toLowerCase();
-  if (!keyword) {
-    return homeData.chapters;
-  }
-
-  return homeData.chapters.filter((chapter) => buildChapterSearchText(chapter).includes(keyword));
+const parseDateValue = (value) => {
+  const timestamp = Date.parse(value);
+  return Number.isNaN(timestamp) ? 0 : timestamp;
 };
 
-const readViewingHistory = () => {
-  try {
-    const rawHistory = window.localStorage.getItem(HISTORY_STORAGE_KEY);
-    const parsedHistory = rawHistory ? JSON.parse(rawHistory) : [];
-    return Array.isArray(parsedHistory) ? parsedHistory.slice(0, HISTORY_LIMIT) : [];
-  } catch (error) {
-    return [];
+const getBooks = () => (Array.isArray(bookshelfData?.books) ? bookshelfData.books.slice() : []);
+
+const getFeaturedBook = () => {
+  const books = getBooks();
+  const publishedBooks = books.filter((book) => book.totalChapters > 0);
+  const candidates = publishedBooks.length ? publishedBooks : books;
+
+  return candidates.sort((left, right) => {
+    const dateGap = parseDateValue(right.updateDate) - parseDateValue(left.updateDate);
+    if (dateGap !== 0) {
+      return dateGap;
+    }
+    return (right.totalChapters || 0) - (left.totalChapters || 0);
+  })[0];
+};
+
+const setLinkHref = (id, href) => {
+  const element = document.getElementById(id);
+  if (element && href) {
+    element.href = href;
   }
 };
 
-const renderViewingHistory = () => {
-  const historyList = document.getElementById("home-history-list");
-  const historyEmpty = document.getElementById("home-history-empty");
-  const historyCount = document.getElementById("home-history-count");
-  const history = readViewingHistory();
+const renderHeaderAndHero = (featuredBook) => {
+  document.title = `${bookshelfData.site.brandName} | 书架`;
+  document.getElementById("brand-name").textContent = bookshelfData.site.brandName;
+  document.getElementById("brand-subtitle").textContent = bookshelfData.site.brandSubtitle;
+  document.getElementById("home-eyebrow").textContent = bookshelfData.site.homeEyebrow;
+  document.getElementById("home-heading").textContent = bookshelfData.site.homeHeading;
+  document.getElementById("home-description").textContent = bookshelfData.site.homeDescription;
+  document.getElementById("bookshelf-description").textContent = bookshelfData.site.bookshelfDescription;
+  document.getElementById("footer-copy").textContent = bookshelfData.site.footerCopy;
 
-  historyCount.textContent = String(history.length);
-  historyList.innerHTML = "";
-  historyEmpty.hidden = history.length !== 0;
+  if (!featuredBook) {
+    return;
+  }
 
-  history.forEach((record) => {
-    const link = createElement("a", "history-entry");
-    link.href = `reader.html?chapter=${record.number}`;
+  document.getElementById("feature-copy").textContent = featuredBook.summary;
+  document.getElementById("activity-copy").textContent = `${featuredBook.title} 目前是首页主推，点击即可直接进入对应作品页。`;
+  document.getElementById("feature-link").textContent = `进入《${featuredBook.title}》`;
 
-    const top = createElement("div", "history-entry-top");
-    top.append(
-      createElement("strong", null, record.title),
-      createElement("span", null, `第 ${record.number} 章`)
-    );
-
-    link.append(top, createElement("p", null, record.visitedLabel || "最近阅读"));
-    historyList.appendChild(link);
-  });
+  setLinkHref("header-feature-link", featuredBook.href);
+  setLinkHref("hero-feature-link", featuredBook.href);
+  setLinkHref("feature-link", featuredBook.href);
+  setLinkHref("footer-feature-link", featuredBook.href);
 };
 
-const renderHeroMeta = () => {
-  const heroMeta = document.getElementById("hero-meta");
-  const items = [
-    ["作者", homeData.novel.author],
-    ["字数", homeData.novel.wordCount],
-    ["标签", homeData.novel.toneTags.join(" / ")]
+const renderLibraryStats = (featuredBook) => {
+  const statRoot = document.getElementById("library-stats");
+  const books = getBooks();
+  const publishedCount = books.filter((book) => book.totalChapters > 0).length;
+  const totalBooks = books.length;
+  const totalChapters = books.reduce((sum, book) => sum + (book.totalChapters || 0), 0);
+  const stats = [
+    ["书架作品", `${totalBooks} 本`],
+    ["已上线", `${publishedCount} 本`],
+    ["当前总章数", `${totalChapters} 章`],
+    ["最近更新", featuredBook?.updateDate || "待更新"]
   ];
 
-  heroMeta.innerHTML = "";
-  items.forEach(([label, value]) => {
-    const wrapper = createElement("div");
-    const dt = createElement("dt", null, label);
-    const dd = createElement("dd", null, value);
-    wrapper.append(dt, dd);
-    heroMeta.appendChild(wrapper);
-  });
-};
-
-const renderSynopsis = () => {
-  const synopsis = document.getElementById("synopsis");
-  synopsis.innerHTML = "";
-  homeData.novel.synopsis.forEach((paragraph) => {
-    synopsis.appendChild(createElement("p", null, paragraph));
-  });
-};
-
-const renderReadingNotes = () => {
-  const list = document.getElementById("reading-notes");
-  list.innerHTML = "";
-  homeData.novel.readingNotes.forEach((note) => {
-    list.appendChild(createElement("li", null, note));
-  });
-};
-
-const renderChapterList = (chapters = homeData.chapters) => {
-  const chapterList = document.getElementById("chapter-list");
-  chapterList.innerHTML = "";
-
-  chapters.forEach((chapter) => {
-    const link = createElement("a", "chapter-card");
-    link.href = `reader.html?chapter=${chapter.number}`;
-
-    const top = createElement("div", "chapter-card-top");
-    top.append(
-      createElement("strong", null, chapter.title),
-      createElement("span", null, chapter.updateDate)
+  statRoot.innerHTML = "";
+  stats.forEach(([label, value]) => {
+    const item = createElement("div");
+    item.append(
+      createElement("span", null, label),
+      createElement("strong", "library-stat-value", value)
     );
-
-    link.append(
-      top,
-      createElement("p", null, chapter.excerpt),
-      createElement("span", "reader-chapter-index", formatChapterIndex(chapter.number))
-    );
-
-    chapterList.appendChild(link);
+    statRoot.appendChild(item);
   });
 };
 
-const renderTimeline = () => {
-  const timeline = document.getElementById("update-timeline");
-  const latestChapters = [...homeData.chapters].slice(-3).reverse();
-  timeline.innerHTML = "";
+const createCoverNode = (book) => {
+  const frame = createElement("div", "shelf-cover");
 
-  latestChapters.forEach((chapter) => {
-    const item = createElement("a", "timeline-item");
-    item.href = `reader.html?chapter=${chapter.number}`;
+  if (book.coverImage) {
+    const image = createElement("img");
+    image.src = book.coverImage;
+    image.alt = book.coverAlt || `${book.title} 封面`;
+    frame.appendChild(image);
+    return frame;
+  }
+
+  const fallback = createElement("div", "shelf-cover-fallback", book.coverFallback || "新书");
+  frame.appendChild(fallback);
+  return frame;
+};
+
+const renderBookshelf = () => {
+  const shelfRoot = document.getElementById("bookshelf-grid");
+  const books = getBooks();
+  shelfRoot.innerHTML = "";
+
+  books.forEach((book) => {
+    const card = createElement("a", "shelf-card");
+    card.href = book.href || "#";
+    if (book.openInNewTab) {
+      card.target = "_blank";
+      card.rel = "noreferrer";
+    }
+
+    const content = createElement("div", "shelf-content");
+    const top = createElement("div", "shelf-top");
+    const heading = createElement("div", "shelf-heading");
+    const title = createElement("h3", null, book.title);
+    const author = createElement("p", "shelf-author", `作者 · ${book.author}`);
+    const badge = createElement("span", "shelf-badge", book.badge || book.status);
+    const summary = createElement("p", "shelf-summary", book.summary);
+    const meta = createElement("div", "shelf-meta");
+    const tags = createElement("div", "shelf-tags");
+    const footer = createElement("div", "shelf-footer");
+    const progress = createElement("span", "shelf-progress", book.progressText || "待更新");
+    const cta = createElement("span", "shelf-cta", book.ctaLabel || "进入作品");
+
+    heading.append(title, author);
+    top.append(heading, badge);
+
+    [
+      book.status,
+      book.totalChapters > 0 ? `共 ${book.totalChapters} 章` : "章节待添加",
+      book.wordCount,
+      `更新 ${book.updateDate}`
+    ].forEach((item) => {
+      meta.appendChild(createElement("span", null, item));
+    });
+
+    (book.tags || []).forEach((tag) => {
+      tags.appendChild(createElement("span", null, tag));
+    });
+
+    footer.append(progress, cta);
+    content.append(top, meta, summary, tags, footer);
+    card.append(createCoverNode(book), content);
+    shelfRoot.appendChild(card);
+  });
+};
+
+const renderPublishingNotes = () => {
+  const notesRoot = document.getElementById("publishing-notes-list");
+  notesRoot.innerHTML = "";
+
+  bookshelfData.site.publishingNotes.forEach((note) => {
+    notesRoot.appendChild(createElement("li", null, note));
+  });
+};
+
+const renderActivity = () => {
+  const activityRoot = document.getElementById("bookshelf-activity");
+  const books = getBooks().sort((left, right) => parseDateValue(right.updateDate) - parseDateValue(left.updateDate));
+  activityRoot.innerHTML = "";
+
+  books.forEach((book) => {
+    const item = createElement("a", "timeline-item shelf-activity-item");
+    item.href = book.href || "#";
+    if (book.openInNewTab) {
+      item.target = "_blank";
+      item.rel = "noreferrer";
+    }
 
     const top = createElement("div", "timeline-item-top");
     top.append(
-      createElement("strong", null, chapter.title),
-      createElement("span", null, chapter.updateDate)
+      createElement("strong", null, book.title),
+      createElement("span", null, book.updateDate)
     );
 
-    item.append(top, createElement("p", null, chapter.excerpt));
-    timeline.appendChild(item);
+    item.append(
+      top,
+      createElement("p", null, `${book.progressText || "待更新"} · ${book.status}`)
+    );
+    activityRoot.appendChild(item);
   });
-};
-
-const updateHomeSearchSummary = (visibleCount, query) => {
-  const summary = document.getElementById("home-search-summary");
-  summary.textContent = query.trim() ? `找到 ${visibleCount} 章` : `共 ${homeData.chapters.length} 章`;
-};
-
-const toggleHomeSearchEmpty = (isEmpty) => {
-  document.getElementById("home-search-empty").hidden = !isEmpty;
-};
-
-const wireStaticFields = () => {
-  const latestChapter = homeData.chapters[homeData.chapters.length - 1];
-  const latestLink = `reader.html?chapter=${latestChapter.number}`;
-
-  document.title = `${homeData.novel.title} | ${homeData.site.brandName}`;
-  document.getElementById("brand-name").textContent = homeData.site.brandName;
-  document.getElementById("novel-title").textContent = homeData.novel.title;
-  document.getElementById("novel-tagline").textContent = homeData.novel.tagline;
-  document.getElementById("novel-status").textContent = homeData.novel.status;
-  document.getElementById("chapter-count").textContent = `${homeData.novel.totalChapters} 章`;
-  document.getElementById("update-date").textContent = homeData.novel.updateDate;
-  document.getElementById("novel-tags").textContent = homeData.novel.toneTags.join(" / ");
-  document.getElementById("novel-quote").textContent = homeData.novel.quote;
-  document.getElementById("novel-cover").src = homeData.novel.coverImage;
-  document.getElementById("novel-cover").alt = homeData.novel.coverAlt;
-  document.getElementById("catalog-description").textContent = `当前已更新至第 ${latestChapter.number} 章，后续可以继续无缝追加。`;
-  document.getElementById("footer-copy").textContent = homeData.site.footerCopy;
-  document.getElementById("latest-chapter-link").href = latestLink;
-  document.getElementById("header-latest-link").href = latestLink;
-  document.getElementById("footer-reader-link").href = latestLink;
-};
-
-const wireHomeSearch = () => {
-  const searchInput = document.getElementById("home-chapter-search");
-
-  const applySearch = () => {
-    const filteredChapters = getFilteredChapters(searchInput.value);
-    renderChapterList(filteredChapters);
-    updateHomeSearchSummary(filteredChapters.length, searchInput.value);
-    toggleHomeSearchEmpty(filteredChapters.length === 0);
-  };
-
-  searchInput.addEventListener("input", applySearch);
-  searchInput.addEventListener("search", applySearch);
-  applySearch();
 };
 
 const activateFadeIn = () => {
@@ -212,13 +205,16 @@ const activateFadeIn = () => {
 };
 
 const initHome = () => {
-  wireStaticFields();
-  renderHeroMeta();
-  renderSynopsis();
-  renderReadingNotes();
-  renderTimeline();
-  renderViewingHistory();
-  wireHomeSearch();
+  if (!bookshelfData || !bookshelfData.site) {
+    return;
+  }
+
+  const featuredBook = getFeaturedBook();
+  renderHeaderAndHero(featuredBook);
+  renderLibraryStats(featuredBook);
+  renderBookshelf();
+  renderPublishingNotes();
+  renderActivity();
   activateFadeIn();
 };
 
