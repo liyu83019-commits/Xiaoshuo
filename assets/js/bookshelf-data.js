@@ -2,14 +2,21 @@
   site: {
     brandName: "知微书舍",
     brandSubtitle: "故事书架",
-    homeEyebrow: "书架精选",
-    homeHeading: "先挑书，再进入对应作品页。",
+    homeEyebrow: "今夜书架",
+    homeHeading: "这一夜，先从你最想翻开的那本开始。",
     homeDescription:
-      "这里收纳站内作品，你可以先挑喜欢的故事，再进入对应作品页继续阅读。",
+      "这里收纳站内故事，从连载追更到新书预告，你可以先挑到最合心意的那一本，再进入对应作品页继续读下去。",
     bookshelfDescription:
       "当前书架已收纳连载中的作品，也预告了下一本即将上架的新书。",
     footerCopy:
       "知微书舍会持续上新，欢迎从书架里挑选下一本想读的故事。",
+    heroPills: [
+      "民国夜局",
+      "悬疑追更",
+      "少帅拉扯",
+      "新书预告",
+      "连载书架"
+    ],
     publishingNotes: [
       "连载中的作品会在书架里持续更新，方便你随时回来续看。",
       "新书上线前会先在书架放出预告，喜欢的话可以先收藏关注。",
@@ -28,6 +35,7 @@
       tags: ["民国", "悬疑", "真假千金", "少帅"],
       badge: "已上线",
       progressText: "已更新至第39章",
+      featureKicker: "枪火未歇，感情线也在失控升温",
       summary:
         "一夜穿进民国名门，她要借少帅的势活下去，也要顺着枪火与旧案，把被偷走的人生一点点夺回来。",
       coverImage: "assets/images/book-cover.png",
@@ -43,9 +51,10 @@
       updateDate: "待公布",
       totalChapters: 0,
       wordCount: "待更新",
-      tags: ["新书", "预留入口", "待上架"],
+      tags: ["新书", "即将上架", "书架预告"],
       badge: "敬请期待",
       progressText: "新书筹备中",
+      featureKicker: "下一段故事正在靠近书架",
       summary:
         "第二本故事正在准备中，等正式上架后，你就可以从这里直接进入阅读。",
       coverFallback: "新书",

@@ -18,18 +18,20 @@ const parseDateValue = (value) => {
 
 const getBooks = () => (Array.isArray(bookshelfData?.books) ? bookshelfData.books.slice() : []);
 
-const getFeaturedBook = () => {
-  const books = getBooks();
-  const publishedBooks = books.filter((book) => book.totalChapters > 0);
-  const candidates = publishedBooks.length ? publishedBooks : books;
-
-  return candidates.sort((left, right) => {
+const getSortedBooks = () =>
+  getBooks().sort((left, right) => {
     const dateGap = parseDateValue(right.updateDate) - parseDateValue(left.updateDate);
     if (dateGap !== 0) {
       return dateGap;
     }
     return (right.totalChapters || 0) - (left.totalChapters || 0);
-  })[0];
+  });
+
+const getFeaturedBook = () => {
+  const books = getSortedBooks();
+  const publishedBooks = books.filter((book) => book.totalChapters > 0);
+  const candidates = publishedBooks.length ? publishedBooks : books;
+  return candidates[0];
 };
 
 const setLinkHref = (id, href) => {
@@ -37,6 +39,82 @@ const setLinkHref = (id, href) => {
   if (element && href) {
     element.href = href;
   }
+};
+
+const renderHeroMarquee = () => {
+  const marqueeRoot = document.getElementById("hero-marquee");
+  const sitePills = Array.isArray(bookshelfData.site.heroPills) ? bookshelfData.site.heroPills : [];
+  const tagPills = getBooks().flatMap((book) => book.tags || []);
+  const pills = [...new Set([...sitePills, ...tagPills])].slice(0, 9);
+
+  marqueeRoot.innerHTML = "";
+  pills.forEach((pill) => {
+    marqueeRoot.appendChild(createElement("span", "hero-pill", pill));
+  });
+};
+
+const renderHeroGlance = (featuredBook) => {
+  const glanceRoot = document.getElementById("hero-glance");
+  const books = getBooks();
+  const publishedCount = books.filter((book) => book.totalChapters > 0).length;
+  const upcomingCount = books.length - publishedCount;
+  const glanceItems = [
+    ["连载追更", `${publishedCount} 本已开放阅读`],
+    ["新书动静", upcomingCount > 0 ? `${upcomingCount} 本即将上架` : "更多故事正在路上"],
+    ["今夜主推", featuredBook ? `《${featuredBook.title}》` : "敬请期待"]
+  ];
+
+  glanceRoot.innerHTML = "";
+  glanceItems.forEach(([label, value]) => {
+    const item = createElement("div", "hero-glance-item");
+    item.append(
+      createElement("span", null, label),
+      createElement("strong", null, value)
+    );
+    glanceRoot.appendChild(item);
+  });
+};
+
+const createCoverNode = (book, coverClassName = "shelf-cover", fallbackClassName = "shelf-cover-fallback") => {
+  const frame = createElement("div", coverClassName);
+
+  if (book.coverImage) {
+    const image = createElement("img");
+    image.src = book.coverImage;
+    image.alt = book.coverAlt || `${book.title} 封面`;
+    frame.appendChild(image);
+    return frame;
+  }
+
+  const fallback = createElement("div", fallbackClassName, book.coverFallback || "新书");
+  frame.appendChild(fallback);
+  return frame;
+};
+
+const renderFeatureBook = (featuredBook) => {
+  if (!featuredBook) {
+    return;
+  }
+
+  const coverRoot = document.getElementById("feature-cover");
+  const tagsRoot = document.getElementById("feature-tags");
+  document.getElementById("feature-kicker").textContent =
+    featuredBook.featureKicker || featuredBook.progressText || "今晚主推";
+  document.getElementById("feature-title").textContent = featuredBook.title;
+  document.getElementById("feature-meta").textContent = [
+    `作者 ${featuredBook.author}`,
+    featuredBook.status,
+    featuredBook.totalChapters > 0 ? `${featuredBook.totalChapters} 章` : "即将开放",
+    featuredBook.updateDate
+  ].join(" · ");
+
+  coverRoot.innerHTML = "";
+  coverRoot.appendChild(createCoverNode(featuredBook, "feature-cover-frame", "feature-cover-fallback"));
+
+  tagsRoot.innerHTML = "";
+  (featuredBook.tags || []).slice(0, 4).forEach((tag) => {
+    tagsRoot.appendChild(createElement("span", null, tag));
+  });
 };
 
 const renderHeaderAndHero = (featuredBook) => {
@@ -53,9 +131,12 @@ const renderHeaderAndHero = (featuredBook) => {
     return;
   }
 
+  renderHeroMarquee();
+  renderHeroGlance(featuredBook);
+  renderFeatureBook(featuredBook);
   document.getElementById("feature-copy").textContent = featuredBook.summary;
-  document.getElementById("activity-copy").textContent = `${featuredBook.title} 目前是首页主推，点击即可直接进入对应作品页。`;
-  document.getElementById("feature-link").textContent = `进入《${featuredBook.title}》`;
+  document.getElementById("activity-copy").textContent = `最近书架里最热的动静来自《${featuredBook.title}》，如果你喜欢强情节和持续推进的故事线，可以直接从这里进入。`;
+  document.getElementById("feature-link").textContent = `今夜就读《${featuredBook.title}》`;
 
   setLinkHref("header-feature-link", featuredBook.href);
   setLinkHref("hero-feature-link", featuredBook.href);
@@ -78,7 +159,7 @@ const renderLibraryStats = (featuredBook) => {
 
   statRoot.innerHTML = "";
   stats.forEach(([label, value]) => {
-    const item = createElement("div");
+    const item = createElement("div", "library-stat-card");
     item.append(
       createElement("span", null, label),
       createElement("strong", "library-stat-value", value)
@@ -87,28 +168,12 @@ const renderLibraryStats = (featuredBook) => {
   });
 };
 
-const createCoverNode = (book) => {
-  const frame = createElement("div", "shelf-cover");
-
-  if (book.coverImage) {
-    const image = createElement("img");
-    image.src = book.coverImage;
-    image.alt = book.coverAlt || `${book.title} 封面`;
-    frame.appendChild(image);
-    return frame;
-  }
-
-  const fallback = createElement("div", "shelf-cover-fallback", book.coverFallback || "新书");
-  frame.appendChild(fallback);
-  return frame;
-};
-
 const renderBookshelf = () => {
   const shelfRoot = document.getElementById("bookshelf-grid");
-  const books = getBooks();
+  const books = getSortedBooks();
   shelfRoot.innerHTML = "";
 
-  books.forEach((book) => {
+  books.forEach((book, index) => {
     const card = createElement("a", "shelf-card");
     card.href = book.href || "#";
     if (book.openInNewTab) {
@@ -117,8 +182,10 @@ const renderBookshelf = () => {
     }
 
     const content = createElement("div", "shelf-content");
+    const serial = createElement("span", "shelf-serial", `No.${String(index + 1).padStart(2, "0")}`);
     const top = createElement("div", "shelf-top");
     const heading = createElement("div", "shelf-heading");
+    const lead = createElement("p", "shelf-lead", book.featureKicker || book.progressText || book.status);
     const title = createElement("h3", null, book.title);
     const author = createElement("p", "shelf-author", `作者 · ${book.author}`);
     const badge = createElement("span", "shelf-badge", book.badge || book.status);
@@ -146,7 +213,7 @@ const renderBookshelf = () => {
     });
 
     footer.append(progress, cta);
-    content.append(top, meta, summary, tags, footer);
+    content.append(serial, top, lead, meta, summary, tags, footer);
     card.append(createCoverNode(book), content);
     shelfRoot.appendChild(card);
   });
@@ -163,7 +230,7 @@ const renderPublishingNotes = () => {
 
 const renderActivity = () => {
   const activityRoot = document.getElementById("bookshelf-activity");
-  const books = getBooks().sort((left, right) => parseDateValue(right.updateDate) - parseDateValue(left.updateDate));
+  const books = getSortedBooks();
   activityRoot.innerHTML = "";
 
   books.forEach((book) => {
@@ -182,7 +249,13 @@ const renderActivity = () => {
 
     item.append(
       top,
-      createElement("p", null, `${book.progressText || "待更新"} · ${book.status}`)
+      createElement(
+        "p",
+        null,
+        book.totalChapters > 0
+          ? `${book.progressText || "待更新"}，最近一次更新在 ${book.updateDate}。`
+          : `${book.progressText || "待更新"}，更多信息会在上架时同步公开。`
+      )
     );
     activityRoot.appendChild(item);
   });
