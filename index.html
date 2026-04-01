@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="简约且高级的连载小说网站模板。">
+  <title>小说站 | 连载阅读</title>
+  <link rel="stylesheet" href="assets/css/styles.css">
+  <script defer src="assets/js/novel-data.js"></script>
+  <script defer src="assets/js/app.js"></script>
+</head>
+<body class="home-page">
+  <div class="ambient ambient-one"></div>
+  <div class="ambient ambient-two"></div>
+
+  <header class="site-header fade-section">
+    <a class="brand" href="index.html">
+      <span class="brand-mark">N</span>
+      <span class="brand-copy">
+        <strong id="brand-name">Novel Residence</strong>
+        <small>Serial Fiction Archive</small>
+      </span>
+    </a>
+    <nav class="site-nav">
+      <a href="#overview">作品简介</a>
+      <a href="#catalog">章节目录</a>
+      <a id="header-latest-link" href="reader.html">最新章节</a>
+    </nav>
+  </header>
+
+  <main class="page-shell">
+    <section class="hero-grid fade-section">
+      <article class="hero-card">
+        <p class="eyebrow">Minimal Edition</p>
+        <h1 id="novel-title">作品名待填</h1>
+        <p class="hero-tagline" id="novel-tagline">你把小说信息给我后，这里会替换成一句更有气质的作品短句。</p>
+
+        <div class="hero-actions">
+          <a class="button button-primary" id="latest-chapter-link" href="reader.html">阅读最新章节</a>
+          <a class="button button-secondary" id="catalog-link" href="#catalog">展开目录</a>
+        </div>
+
+        <dl class="hero-meta" id="hero-meta"></dl>
+      </article>
+
+      <aside class="status-card">
+        <p class="status-label">Current Edition</p>
+        <div class="status-divider"></div>
+        <div class="status-row">
+          <span>连载状态</span>
+          <strong id="novel-status">连载中</strong>
+        </div>
+        <div class="status-row">
+          <span>更新进度</span>
+          <strong id="chapter-count">15 章</strong>
+        </div>
+        <div class="status-row">
+          <span>最近更新</span>
+          <strong id="update-date">待补充</strong>
+        </div>
+        <div class="status-row">
+          <span>阅读风格</span>
+          <strong id="novel-tags">待补充</strong>
+        </div>
+        <blockquote class="status-quote" id="novel-quote">
+          页面已搭好，后面我们只需要持续补内容。
+        </blockquote>
+      </aside>
+    </section>
+
+    <section class="overview-grid fade-section" id="overview">
+      <article class="panel panel-large">
+        <div class="panel-heading">
+          <span>Overview</span>
+          <h2>作品简介</h2>
+        </div>
+        <div class="copy-stack" id="synopsis"></div>
+      </article>
+
+      <article class="panel">
+        <div class="panel-heading">
+          <span>Notes</span>
+          <h2>阅读信息</h2>
+        </div>
+        <ul class="notes-list" id="reading-notes"></ul>
+      </article>
+    </section>
+
+    <section class="catalog-section fade-section" id="catalog">
+      <div class="section-heading">
+        <div>
+          <span>Catalog</span>
+          <h2>章节目录</h2>
+        </div>
+        <p id="catalog-description">当前已更新至第 15 章，后续可以继续无缝追加。</p>
+      </div>
+      <div class="chapter-list" id="chapter-list"></div>
+    </section>
+
+    <section class="timeline-section fade-section">
+      <div class="section-heading">
+        <div>
+          <span>Latest Updates</span>
+          <h2>最近更新</h2>
+        </div>
+        <p>这里会自动突出最新几章，读者可以直接续读。</p>
+      </div>
+      <div class="timeline-list" id="update-timeline"></div>
+    </section>
+  </main>
+
+  <footer class="site-footer fade-section">
+    <p id="footer-copy">小说站已就绪，等待你的作品信息与正文。</p>
+    <a href="reader.html" id="footer-reader-link">进入阅读页</a>
+  </footer>
+</body>
+</html>

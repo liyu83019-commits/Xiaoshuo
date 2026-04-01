@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="小说章节阅读页。">
+  <title>章节阅读 | 小说站</title>
+  <link rel="stylesheet" href="assets/css/styles.css">
+  <script defer src="assets/js/novel-data.js"></script>
+  <script defer src="assets/js/reader.js"></script>
+</head>
+<body class="reader-page">
+  <div class="reader-progress">
+    <span id="reading-progress-bar"></span>
+  </div>
+
+  <header class="reader-header fade-section">
+    <a class="reader-home-link" href="index.html">返回首页</a>
+    <div class="reader-header-copy">
+      <p id="reader-site-title">Novel Residence</p>
+      <h1 id="reader-chapter-title">章节标题</h1>
+    </div>
+    <div class="reader-header-meta" id="reader-header-meta"></div>
+  </header>
+
+  <main class="reader-layout">
+    <aside class="reader-sidebar fade-section">
+      <div class="sidebar-heading">
+        <span>Catalog</span>
+        <h2>章节目录</h2>
+      </div>
+      <div class="reader-catalog" id="reader-catalog"></div>
+    </aside>
+
+    <article class="reader-article fade-section">
+      <div class="reader-article-head">
+        <p class="eyebrow" id="reader-chapter-label">Chapter</p>
+        <h2 id="reader-article-title">章节标题</h2>
+        <p class="reader-article-meta" id="reader-article-meta">更新于 2026-04-01</p>
+      </div>
+
+      <div class="reader-copy" id="chapter-content"></div>
+
+      <nav class="reader-nav" id="reader-nav"></nav>
+    </article>
+  </main>
+</body>
+</html>
