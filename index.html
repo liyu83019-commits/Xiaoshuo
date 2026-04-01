@@ -1,159 +1,107 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="简约且高级的连载小说网站模板。">
-  <title>小说站 | 连载阅读</title>
+  <meta
+    name="description"
+    content="知微书舍书架首页，可在这里挑选想读的作品并进入对应链接。"
+  >
+  <title>知微书舍 | 书架</title>
   <link rel="stylesheet" href="assets/css/styles.css">
-  <script defer src="assets/js/novel-data.js"></script>
+  <script defer src="assets/js/bookshelf-data.js"></script>
   <script defer src="assets/js/app.js"></script>
 </head>
-<body class="home-page">
+<body class="home-page bookshelf-page">
   <div class="ambient ambient-one"></div>
   <div class="ambient ambient-two"></div>
 
   <header class="site-header fade-section">
     <a class="brand" href="index.html">
-      <span class="brand-mark">N</span>
+      <span class="brand-mark">藏</span>
       <span class="brand-copy">
-        <strong id="brand-name">Novel Residence</strong>
-        <small>Serial Fiction Archive</small>
+        <strong id="brand-name">知微书舍</strong>
+        <small id="brand-subtitle">Bookshelf Landing</small>
       </span>
     </a>
     <div class="header-actions">
       <nav class="site-nav">
-        <a href="#overview">作品简介</a>
-        <a href="#catalog">章节目录</a>
-        <a id="header-latest-link" href="reader.html">最新章节</a>
+        <a href="#bookshelf">书架</a>
+        <a href="#publishing-notes">上新计划</a>
+        <a id="header-feature-link" href="reader.html">继续阅读</a>
       </nav>
-      <details class="history-widget">
-        <summary class="history-trigger">
-          <span>观看记录</span>
-          <strong id="home-history-count">0</strong>
-        </summary>
-        <div class="history-panel">
-          <div class="history-panel-head">
-            <span>Recent</span>
-            <h2>最近阅读</h2>
-          </div>
-          <div class="history-list" id="home-history-list"></div>
-          <p class="history-empty" id="home-history-empty" hidden>还没有阅读记录，读过章节后这里会自动出现。</p>
-        </div>
-      </details>
     </div>
   </header>
 
   <main class="page-shell">
-    <section class="hero-grid fade-section">
-      <aside class="status-card">
-        <div class="status-top">
-          <figure class="cover-frame">
-            <img id="novel-cover" src="assets/images/book-cover.png" alt="小说封面">
-          </figure>
-          <div class="status-summary">
-            <p class="status-label">Current Edition</p>
-            <h2>书籍档案</h2>
-            <p class="status-copy">一页看清作品气质、更新状态与当前阅读入口。</p>
-          </div>
-        </div>
-        <div class="status-divider"></div>
-        <div class="status-grid">
-          <div class="status-row">
-            <span>连载状态</span>
-            <strong id="novel-status">连载中</strong>
-          </div>
-          <div class="status-row">
-            <span>更新进度</span>
-            <strong id="chapter-count">15 章</strong>
-          </div>
-          <div class="status-row">
-            <span>最近更新</span>
-            <strong id="update-date">待补充</strong>
-          </div>
-          <div class="status-row">
-            <span>阅读风格</span>
-            <strong id="novel-tags">待补充</strong>
-          </div>
-        </div>
-        <blockquote class="status-quote" id="novel-quote">
-          页面已搭好，后面我们只需要持续补内容。
-        </blockquote>
-      </aside>
-
-      <article class="hero-card">
-        <p class="eyebrow">Minimal Edition</p>
-        <h1 id="novel-title">作品名待填</h1>
-        <p class="hero-tagline" id="novel-tagline">你把小说信息给我后，这里会替换成一句更有气质的作品短句。</p>
-        <section class="hero-synopsis-block" id="overview">
-          <div class="mini-heading">
-            <span>Overview</span>
-            <h2>作品简介</h2>
-          </div>
-          <div class="copy-stack hero-synopsis" id="synopsis"></div>
-        </section>
-
+    <section class="library-hero fade-section">
+      <article class="panel library-intro">
+        <p class="eyebrow" id="home-eyebrow">Bookshelf</p>
+        <h1 id="home-heading">在书架里挑一本，再进入对应作品页。</h1>
+        <p class="hero-tagline" id="home-description">
+          这里不再展示单本书详情，而是作为整站入口。后面你每写一本新书，只要补一张卡片和一个链接即可。
+        </p>
         <div class="hero-actions">
-          <a class="button button-primary" id="latest-chapter-link" href="reader.html">阅读最新章节</a>
-          <a class="button button-secondary" id="catalog-link" href="#catalog">展开目录</a>
+          <a class="button button-primary" href="#bookshelf">查看书架</a>
+          <a class="button button-secondary" id="hero-feature-link" href="reader.html">继续当前连载</a>
         </div>
-
-        <dl class="hero-meta" id="hero-meta"></dl>
       </article>
+
+      <aside class="panel library-feature">
+        <div class="panel-heading">
+          <span>Featured</span>
+          <h2>本周主推</h2>
+        </div>
+        <p class="panel-copy" id="feature-copy">
+          当前更新中的作品会优先显示在这里，方便读者一进站就看到最新连载。
+        </p>
+        <div class="library-stats" id="library-stats"></div>
+        <a class="feature-link" id="feature-link" href="reader.html">进入本周主推</a>
+      </aside>
     </section>
 
-    <section class="home-content-grid fade-section">
-      <article class="panel panel-compact">
-        <div class="panel-heading">
-          <span>Notes</span>
-          <h2>阅读信息</h2>
-        </div>
-        <div class="panel-body-scroll">
-          <ul class="notes-list" id="reading-notes"></ul>
-        </div>
-      </article>
-
-      <article class="panel panel-compact">
-        <div class="panel-heading">
-          <span>Latest Updates</span>
-          <h2>最近更新</h2>
-        </div>
-        <p class="panel-copy">这里会自动突出最新几章，读者可以直接续读。</p>
-        <div class="panel-body-scroll">
-          <div class="timeline-list" id="update-timeline"></div>
-        </div>
-      </article>
-    </section>
-
-    <section class="catalog-section fade-section" id="catalog">
+    <section class="catalog-section shelf-section fade-section" id="bookshelf">
       <div class="section-heading">
         <div>
-          <span>Catalog</span>
-          <h2>章节目录</h2>
+          <span>Bookshelf</span>
+          <h2>作品书架</h2>
         </div>
-        <p id="catalog-description">当前已更新至第 15 章，后续可以继续无缝追加。</p>
+        <p id="bookshelf-description">
+          每本书都独立成卡片，点击后跳转到对应链接。后面继续加书时，这里会自然扩展。
+        </p>
       </div>
-      <div class="search-panel">
-        <label class="search-box" for="home-chapter-search">
-          <span>Search</span>
-          <input
-            id="home-chapter-search"
-            type="search"
-            inputmode="search"
-            autocomplete="off"
-            placeholder="搜索章节标题、章节号或内容关键词"
-          >
-        </label>
-        <p class="search-summary" id="home-search-summary">共 0 章</p>
-      </div>
-      <div class="chapter-list" id="chapter-list"></div>
-      <p class="search-empty" id="home-search-empty" hidden>暂时没有找到相关章节，换个关键词再试试。</p>
+      <div class="bookshelf-grid" id="bookshelf-grid"></div>
+    </section>
+
+    <section class="roadmap-grid fade-section" id="publishing-notes">
+      <article class="panel panel-compact">
+        <div class="panel-heading">
+          <span>Workflow</span>
+          <h2>更新方式</h2>
+        </div>
+        <div class="panel-body-scroll">
+          <ul class="notes-list" id="publishing-notes-list"></ul>
+        </div>
+      </article>
+
+      <article class="panel panel-compact">
+        <div class="panel-heading">
+          <span>Activity</span>
+          <h2>书架动态</h2>
+        </div>
+        <p class="panel-copy" id="activity-copy">
+          首页会优先提示最近更新和正在筹备的新书入口。
+        </p>
+        <div class="panel-body-scroll">
+          <div class="timeline-list" id="bookshelf-activity"></div>
+        </div>
+      </article>
     </section>
   </main>
 
   <footer class="site-footer fade-section">
-    <p id="footer-copy">小说站已就绪，等待你的作品信息与正文。</p>
-    <a href="reader.html" id="footer-reader-link">进入阅读页</a>
+    <p id="footer-copy">首页已切换为书架模式，后面可以继续扩展到多本书。</p>
+    <a href="reader.html" id="footer-feature-link">进入当前作品</a>
   </footer>
 </body>
 </html>
